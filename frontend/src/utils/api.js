@@ -8,6 +8,16 @@ export const fetchProjects = async () => {
         return response.data;
     } catch (error) {
         console.error("Error fetching projects:", error);
-        return [];
+        return null;
+    }
+};
+
+export const createProject = async (project) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/projects`, project);
+        return response.data;
+    } catch (error) {
+        console.error("Error creating project:", error);
+        return null;
     }
 };

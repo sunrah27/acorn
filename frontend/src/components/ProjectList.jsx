@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { fetchProjects } from '../utils/api';  // We will set up this API file soon
+import { useState, useEffect } from 'react';
+import { fetchProjects, createProject } from '../utils/api';
 
 const ProjectList = () => {
-    const [projects, setProjects] = useState([]);  // State to store projects
+    const [projects, setProjects] = useState([]);
+    const [newProject, setNewProject] = useState({ name: '', short_name: '' });
 
-    // Fetch projects when component loads
     useEffect(() => {
         const getProjects = async () => {
             const data = await fetchProjects();
@@ -12,16 +12,52 @@ const ProjectList = () => {
         };
 
         getProjects();
-    }, []);  // Empty dependency array to run this effect once on mount
+    }, []);
+
+    const handleInputChange = (e) => {
+        setNewProject({
+            ...newProject,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const createdProject = await createProject(newProject);
+        setProjects([...projects, createdProject]);                 // Add new project to state
+        setNewProject({ name: '', short_name: '' });                // Clear form
+    };
 
     return (
         <div>
             <h1>Projects</h1>
             <ul>
                 {projects.map(project => (
-                    <li key={project.id}>{project.name}</li>
+                    <li key={project._id}>{project.name}</li>
                 ))}
             </ul>
+
+            {/* Project creation form */}
+            <h2>Create a New Project</h2>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    name="name"
+                    value={newProject.name}
+                    onChange={handleInputChange}
+                    placeholder="Project Name"
+                    required
+                />
+                <input
+                    type="text"
+                    name="short_name"
+                    value={newProject.short_name}
+                    onChange={handleInputChange}
+                    placeholder="Short Name"
+                    required
+                />
+                <button type="submit">Create Project</button>
+            </form>
         </div>
     );
 };

@@ -1,5 +1,4 @@
-import React from 'react';
-import ProjectList from './components/ProjectList';  // Adjust the path if needed
+import ProjectList from './components/ProjectList';
 
 function App() {
     return (
